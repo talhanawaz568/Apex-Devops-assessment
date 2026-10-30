@@ -25,7 +25,7 @@ async def lifespan(app: FastAPI):
     engine.dispose()
 
 
-app = FastAPI(title="Apex Operations API", version="1.1.0", lifespan=lifespan)
+app = FastAPI(title="Apex Operations API", version="1.2.0", lifespan=lifespan)
 
 
 @app.middleware("http")
