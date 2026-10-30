@@ -3,9 +3,6 @@
 set -Eeuo pipefail
 
 
-# --------------------------------------------------
-# Project Configuration
-# --------------------------------------------------
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -18,9 +15,6 @@ CURRENT_FILE="${STATE_DIR}/current"
 PREVIOUS_FILE="${STATE_DIR}/previous"
 
 
-# --------------------------------------------------
-# Verify Configuration
-# --------------------------------------------------
 
 if [[ ! -f ".env" ]]; then
 
@@ -30,10 +24,6 @@ if [[ ! -f ".env" ]]; then
 
 fi
 
-
-# --------------------------------------------------
-# Verify Release History
-# --------------------------------------------------
 
 if [[ ! -s "$CURRENT_FILE" ]]; then
 
@@ -53,9 +43,6 @@ if [[ ! -s "$PREVIOUS_FILE" ]]; then
 fi
 
 
-# --------------------------------------------------
-# Load Release Information
-# --------------------------------------------------
 
 CURRENT="$(cat "$CURRENT_FILE")"
 
@@ -71,9 +58,6 @@ echo "Current image: $CURRENT"
 echo "Rollback target: $TARGET"
 
 
-# --------------------------------------------------
-# Docker Compose Helper
-# --------------------------------------------------
 
 compose() {
 
@@ -86,9 +70,6 @@ compose() {
 }
 
 
-# --------------------------------------------------
-# Restore Previous Image
-# --------------------------------------------------
 
 export APP_IMAGE="$TARGET"
 
@@ -106,9 +87,6 @@ compose up \
     api
 
 
-# --------------------------------------------------
-# Verify Rollback
-# --------------------------------------------------
 
 echo "Verifying restored application..."
 
@@ -132,7 +110,7 @@ if bash scripts/smoke-test.sh; then
 
     echo "====================================="
     echo "ROLLBACK SUCCESSFUL"
-    echo "====================================="
+    echo "*************************************"
 
     echo "Restored image: $TARGET"
 
@@ -141,9 +119,6 @@ if bash scripts/smoke-test.sh; then
 fi
 
 
-# --------------------------------------------------
-# Handle Rollback Failure
-# --------------------------------------------------
 
 echo "CRITICAL: Rollback health verification failed"
 

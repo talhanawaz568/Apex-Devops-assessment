@@ -10,9 +10,7 @@ MAX_ATTEMPTS=25
 SLEEP_SECONDS=2
 
 
-echo "====================================="
 echo "Running Application Smoke Tests"
-echo "====================================="
 
 
 
@@ -93,8 +91,6 @@ else
 fi
 
 
-echo "====================================="
 echo "All Smoke Tests Passed"
-echo "====================================="
 
 exit 0

@@ -1,39 +1,64 @@
-# Apex Operations API — DevOps Practical Assessment
+A containerized FastAPI + PostgreSQL application built for the Apex AI Arabia DevOps Practical Assessment. The project demonstrates automated testing, CI/CD, container security, deployment, monitoring, and rollback.
 
-A minimal task-tracking API built with FastAPI, PostgreSQL, and Docker Compose.
+Tech Stack
 
-## Prerequisites
-- Docker Engine + Docker Compose plugin
-- Optional: Python 3.12 for local development
+Application: Python, FastAPI, PostgreSQL
 
-## Run
-```bash
+Containers: Docker, Docker Compose
+
+CI/CD: GitHub Actions, GitHub Container Registry
+
+Testing: Pytest, Ruff
+
+Security: Trivy, non-root containers
+
+Operations: Bash scripts, health checks, structured logging
+
+Architecture
+
+GitHub → GitHub Actions → Tests → Docker Build
+                                   |
+                              Trivy Scan
+                                   |
+                                  GHCR
+                                   |
+                            Docker Compose
+                              /        \
+                          FastAPI    PostgreSQL
+
+Quick Start
+
+git clone <REPOSITORY_URL>
+cd apex-devops-assessment
+
 cp .env.example .env
-# Replace the DB_PASSWORD placeholder in .env with a strong, unique local value.
-docker compose --env-file .env config --quiet
-docker compose --env-file .env up --build -d
+nano .env
+chmod 600 .env
+
+docker compose up --build -d
 docker compose ps
-curl -i http://127.0.0.1:8000/health
-curl -i http://127.0.0.1:8000/ready
-curl -i -X POST http://127.0.0.1:8000/api/tasks -H 'Content-Type: application/json' -d '{"title":"Verify daily backup"}'
-curl -i http://127.0.0.1:8000/api/tasks
-```
 
-API docs: http://127.0.0.1:8000/docs
+Verify application:
 
-## Stop (retain database volume)
-```bash
-docker compose down
-```
+curl http://localhost:8000/health
+curl http://localhost:8000/ready
 
-**Warning:** `docker compose down -v` destroys the database volume.
+Automated Testing
 
-## Status
-This starter includes phases 1–3 only. CI, tests, image promotion, release/rollback and the full runbook are future phases; do not claim they are complete.
+pip install -r requirements-dev.txt
+ruff check app tests
+python -m pytest -v
 
-## Decisions and limitations
-- `create_all` initializes a fresh database for the assessment; production migrations should use Alembic.
-- The application is a single instance and Compose does not provide high availability.
-- Local `.env` is only an assessment convenience; production should use managed secrets or properly protected secret files.
-- A Docker `HEALTHCHECK` monitors process liveness, while `/ready` checks database availability.
-- Application dependency versions are pinned; container image tags should also be pinned by digest for stronger immutability in a later hardening step.
+Deployment & Rollback
+
+Deploy a CI-validated image:
+
+./scripts/deploy.sh <GHCR_IMAGE_REFERENCE>
+
+Run smoke tests:
+
+./scripts/smoke-test.sh
+
+Rollback to the previous verified release:
+
+./scripts/rollback.sh
